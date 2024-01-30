@@ -59,6 +59,9 @@ class Secp256k1:
 
 
 # Example usage:
+'''
+for private key we can enable all posible funqtions
+'''
 private_key = 0x2  # This should be a large, random number in a real application
 public_key = Secp256k1.generate_public_key(private_key)
 print(f"Public Key: ({hex(public_key.x)}, {hex(public_key.y)})")
