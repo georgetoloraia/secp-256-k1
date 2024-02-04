@@ -41,17 +41,24 @@ class Secp256k1:
 
     @staticmethod
     def scalar_mult(k, point):
-        # Simple and insecure scalar multiplication, not using double-and-add
         result = ECPoint(None, None, infinity=True)  # Start with the point at infinity
         addend = point
+        log_steps = []  # List to store steps for logging
+        number = 0
 
         while k:
             if k & 1:
                 result = Secp256k1.point_add(result, addend)
+                log_steps.append((f'{number} - Add', result.x, result.y))  # Log the result of point addition
+                number += 1
+                k >>= 1
             addend = Secp256k1.point_add(addend, addend)
+            log_steps.append((f'{number} - Double', addend.x, addend.y))  # Log the result of point doubling
+            number += 1
             k >>= 1
+            print(k)
 
-        return result
+        return result, log_steps
 
     @staticmethod
     def generate_public_key(private_key):
@@ -59,9 +66,23 @@ class Secp256k1:
 
 
 # Example usage:
-'''
-for private key we can enable all posible funqtions
-'''
-private_key = 0x633cbe3ec02b9401c5effa144c5b4d22f87940259634858fc7e59b1c09937852  # This should be a large, random number in a real application
-public_key = Secp256k1.generate_public_key(private_key)
-print(f"Public Key: ({hex(public_key.x)}, {hex(public_key.y)})")
+private_key = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141  # This should be a large, random number in a real application
+public_key, log_steps = Secp256k1.generate_public_key(private_key)
+
+# Prepare data to write to file
+result_data = f"Public Key: ({hex(public_key.x)}, {hex(public_key.y)})\n"
+result_data += "\nLog Steps (x, y):\n"
+result_data += "\n".join([f"{step[0]}: ({hex(step[1])}, {hex(step[2])})" for step in log_steps])
+
+# Write the public key and steps to a file
+result_file_path = 'result.txt'
+with open(result_file_path, 'w') as file:
+    file.write(result_data)
+
+# Write the steps to a separate file
+steps_file_path = 'steps_log.txt'
+with open(steps_file_path, 'w') as f:
+    for step in log_steps:
+        f.write(f"{hex(step[1])}\n{hex(step[2])}\n")
+
+print(f"Public key and log steps written to {result_file_path} and {steps_file_path}, respectively.")
