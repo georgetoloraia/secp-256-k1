@@ -1,5 +1,5 @@
 
-
+import random
 # First, let's open the file to understand its structure and content before processing it.
 file_path = 'all_updated.txt'
 with open(file_path, 'r') as file:
@@ -12,6 +12,7 @@ print(content[:500])
 
 # Splitting the content into lines and adding 1 to each number
 lines = content.strip().split('\n')
+# updated_lines = [str(int(line) + random.randint(1, 18465215316571951246587459658541232549875463218465215316571951246587)) for line in lines]
 updated_lines = [str(int(line) + 1) for line in lines]
 
 # Joining the updated lines back into a single string

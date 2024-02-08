@@ -22,23 +22,29 @@ class Secp256k1:
 
     @staticmethod
     def point_add(p1, p2):
-        print(f"\n--- Point Addition: {p1} + {p2} ---")
+        print(f"\n--- Point Addition: {p1} + {p2} ---\n")
+        print("---------------------------------------------- 1 ----------------------------------------------")
         if p1.infinity:
             print(f"Point {p1} is at infinity, returning {p2}\n")
+            print("------------------------------------------- 2 -----------------------------------------------")
             return p2
         if p2.infinity:
             print(f"Point {p2} is at infinity, returning {p1}\n")
+            print("------------------------------------ 3 -----------------------------------------------------")
             return p1
 
         if p1.x == p2.x and p1.y != p2.y:
             print(f"Points {p1} and {p2} are vertical reflections, returning Infinity\n")
+            print("---------------------------------- 4 ----------------------------------")
             return ECPoint(None, None, infinity=True)
 
         if p1.x == p2.x and p1.y == p2.y:
             if p1.y == 0:
                 print(f"Tangent at {p1} is vertical, returning Infinity\n")
+                print("--------------------------------------- 5 ------------------------")
                 return ECPoint(None, None, infinity=True)
             print(f"Point doubling case, points are the same\n")
+            print("------------------------------------- 6 -------------------------------")
             lam_num = (3 * p1.x**2 + Secp256k1.a)
             lam_den = (2 * p1.y)
             lam = (lam_num * pow(lam_den, -1, Secp256k1.p)) % Secp256k1.p
@@ -49,6 +55,7 @@ class Secp256k1:
             file.write(f"{lam}\n")
         else:
             print(f"General case, different points\n")
+            print("---------------------------------- 7 --------------------------------")
             lam_num = (p2.y - p1.y)
             lam_den = (p2.x - p1.x)
             lam = (lam_num * pow(lam_den, -1, Secp256k1.p)) % Secp256k1.p
@@ -62,6 +69,7 @@ class Secp256k1:
         y3 = (lam * (p1.x - x3) - p1.y) % Secp256k1.p
         result = ECPoint(x3, y3)
         print(f"Resulting Point after addition: {result}")
+        print("------------------------------------------- 8 ---------------------------")
         return result
 
     @staticmethod
@@ -93,7 +101,7 @@ class Secp256k1:
 file = open('numbers.txt', 'w')
 
 # Example usage:
-private_key = 0xf
+private_key = 0x5
 public_key = Secp256k1.generate_public_key(private_key)
 print(f"\nFinal Public Key: {public_key}")
 

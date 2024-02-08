@@ -11,7 +11,7 @@ def save_to_file(number):
         file.write(f'{number}\n')
 
 # Define the number of random numbers you want to generate
-number_of_random_numbers = 100000
+number_of_random_numbers = 10000
 
 for _ in range(number_of_random_numbers):
     # Generate a random number

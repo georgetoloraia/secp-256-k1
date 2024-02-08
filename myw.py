@@ -45,6 +45,7 @@ def convert_to_wif(hex_number, compressed=True):
 
 def main():
     input_file = 'all_hex.txt'  # The file with the hexadecimal numbers
+    # input_file = 'pub-hunt.txt'  # The file with the hexadecimal numbers
     output_file_wif_all = 'allwifs.txt'  # File for uncompressed WIFs
     #output_file_compressed = 'allwifs_compressed.txt'  # File for compressed WIFs
     

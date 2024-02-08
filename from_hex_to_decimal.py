@@ -1,4 +1,8 @@
 # Convert the hexadecimal number to decimal
-hex_number = "30210c23b1a047bc9bdbb13448e67deddc108946de6de639bcc75d47c0216b1b"
+hex_number = "a6b627abb58d7ab22588dd13d40cbdd60f0da7bb38881d171ef178c35d890f0d"
 decimal_number = int(hex_number, 16)
 print(decimal_number)
+
+while decimal_number:
+    decimal_number >>= 130
+    print(decimal_number)

@@ -9,18 +9,12 @@ class Secp256k1:
     a = 0
     b = 7
     G = ECPoint(
-        x=0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798,
-        y=0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8,
+        x=0x633cbe3ec02b9401c5effa144c5b4d22f87940259634858fc7e59b1c09937852,
+        y=0xb078a17cc1558a9a4fa0b406f194c9a2b71d9a61424b533ceefe27408b3191e3,
     )
     n = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
     h = 1
 
-    @staticmethod
-    def point_negate(P):
-        if P.infinity:
-            return P
-        return ECPoint(P.x, -P.y % Secp256k1.p, P.infinity)
-    
     @staticmethod
     def point_add(p1, p2):
         # Handle the identity element (point at infinity)
@@ -55,7 +49,7 @@ class Secp256k1:
             if k & 1:
                 result = Secp256k1.point_add(result, addend)
             addend = Secp256k1.point_add(addend, addend)
-            k >>= 1
+            k <<= 1
 
         return result
 
@@ -68,6 +62,7 @@ class Secp256k1:
 '''
 for private key we can enable all posible funqtions
 '''
-private_key = 0x1  # This should be a large, random number in a real application
+private_key = 0xfaaaaaf11111111111111111111111111110aaaaa  # This should be a large, random number in a real application
 public_key = Secp256k1.generate_public_key(private_key)
+
 print(f"Public Key: ({hex(public_key.x)}, {hex(public_key.y)})")

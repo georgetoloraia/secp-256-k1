@@ -10,7 +10,7 @@ class Secp256k1(Secp256k1):  # Extend the existing Secp256k1 class
         current_point = ECPoint(None, None, infinity=True)  # Start with the point at infinity
         for d in range(1, Secp256k1.n):
             current_point = Secp256k1.point_add(current_point, generator_point)
-            print(current_point.x)
+            print(current_point.x, public_key.x)
             if current_point.x == public_key.x and current_point.y == public_key.y:
                 return d  # Private key found
         return None  # Private key not found (this should not happen if the public key is valid)

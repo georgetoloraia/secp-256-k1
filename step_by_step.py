@@ -1,3 +1,5 @@
+import secrets
+
 class ECPoint:
     def __init__(self, x, y, infinity=False):
         self.x = x
@@ -45,44 +47,55 @@ class Secp256k1:
         addend = point
         log_steps = []  # List to store steps for logging
         number = 0
+        unique_hex_values = set()  # Set to store unique x values in hex
 
         while k:
             if k & 1:
                 result = Secp256k1.point_add(result, addend)
                 log_steps.append((f'{number} - Add', result.x, result.y))  # Log the result of point addition
+                if not result.infinity:
+                    unique_hex_values.add(hex(result.x)[2:].zfill(64))  # Add x value of result to set
                 number += 1
                 k >>= 1
             addend = Secp256k1.point_add(addend, addend)
             log_steps.append((f'{number} - Double', addend.x, addend.y))  # Log the result of point doubling
+            if not addend.infinity:
+                unique_hex_values.add(hex(addend.x)[2:].zfill(64))  # Add x value of addend to set
             number += 1
             k >>= 1
-            print(k)
 
-        return result, log_steps
+        return result, log_steps, unique_hex_values
 
     @staticmethod
     def generate_public_key(private_key):
-        return Secp256k1.scalar_mult(private_key, Secp256k1.G)
+        public_key, log_steps, unique_hex_values = Secp256k1.scalar_mult(private_key, Secp256k1.G)
+        return public_key, log_steps, unique_hex_values
 
+# ... (rest of the code remains the same)
+for prv in range(500):
+    prv = 256
+# private_key = 0x24944f33566d9ed9c410ae72f89454ac6f0cfee446590c01751f094e185e8978
+    private_key = secrets.randbits(prv)
 
-# Example usage:
-private_key = 0x4  # This should be a large, random number in a real application
-public_key, log_steps = Secp256k1.generate_public_key(private_key)
+# Generate public key and get unique hex values
+    public_key, log_steps, unique_hex_values = Secp256k1.generate_public_key(private_key)
 
-# Prepare data to write to file
-result_data = f"Public Key: ({hex(public_key.x)}, {hex(public_key.y)})\n"
-result_data += "\nLog Steps (x, y):\n"
-result_data += "\n".join([f"{step[0]}: ({hex(step[1])}, {hex(step[2])})" for step in log_steps])
+# Read existing hex values from the file
+    existing_hex_values = set()
+    try:
+        with open('all_hex.txt', 'r') as file:
+            existing_hex_values = set(line.strip() for line in file.readlines())
+    except FileNotFoundError:
+        pass  # It's okay if the file does not exist
 
-# Write the public key and steps to a file
-result_file_path = 'result1.txt'
-with open(result_file_path, 'w') as file:
-    file.write(result_data)
+# Add new unique hex values
+    new_unique_hex_values = unique_hex_values - existing_hex_values
 
-# Write the steps to a separate file
-steps_file_path = 'steps_log.txt'
-with open(steps_file_path, 'w') as f:
-    for step in log_steps:
-        f.write(f"{hex(step[1])}\n{hex(step[2])}\n")
+# Write the unique hex values to a file, if there are any new ones
+    if new_unique_hex_values:
+        with open('all_hex.txt', 'a') as f:
+            for hex_val in new_unique_hex_values:
+                f.write(f"{hex_val}\n")
 
-print(f"Public key and log steps written to {result_file_path} and {steps_file_path}, respectively.")
+    print(f"All unique hex values written to all_hex.txt. {private_key}")
+
