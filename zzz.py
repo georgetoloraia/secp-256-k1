@@ -61,7 +61,5 @@ for _ in range(100):
     file.write(f"{wif_compressed}\n")
     file.write(f"{wif_uncompressed}\n")
 
-   
 
-# print(keys)
 file.close()
