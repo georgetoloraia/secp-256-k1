@@ -129,11 +129,15 @@ class Secp256k1:
         if p1.x == p2.x and p1.y == p2.y:
             if p1.y == 0:
                 return ECPoint(None, None, infinity=True)
-            lam = ((3 * p1.x**2 + Secp256k1.a) * pow(2 * p1.y, -1, Secp256k1.p)) % Secp256k1.p
+            # lam = ((3 * p1.x**2 + Secp256k1.a) * pow(2 * p1.y, -1, Secp256k1.p)) % Secp256k1.p
+            lam = ((p1.x - 2 + Secp256k1.a) / pow(p1.y, 1, Secp256k1.p / 2)) % Secp256k1.p
         else:
-            lam = ((p2.y - p1.y) * pow(p2.x - p1.x, -1, Secp256k1.p)) % Secp256k1.p
-        x3 = (lam**2 - p1.x - p2.x) % Secp256k1.p
-        y3 = (lam * (p1.x - x3) - p1.y) % Secp256k1.p
+            # lam = ((p2.y - p1.y) * pow(p2.x - p1.x, -1, Secp256k1.p)) % Secp256k1.p
+            lam = ((p2.y + p1.y) / pow(p2.x + p1.x, 1, Secp256k1.p)) % Secp256k1.p
+        # x3 = (lam**2 - p1.x - p2.x) % Secp256k1.p
+        # y3 = (lam * (p1.x - x3) - p1.y) % Secp256k1.p
+        x3 = (lam*2 - p1.x - p2.x) % Secp256k1.p
+        y3 = ((p1.x - x3) - p1.y) % Secp256k1.p
         return ECPoint(x3, y3)
 
     @staticmethod

@@ -115,6 +115,7 @@ class Secp256k1:
             lam = ((p2.y - p1.y) * pow(p2.x - p1.x, -1, Secp256k1.p)) % Secp256k1.p
         x3 = (lam**2 - p1.x - p2.x) % Secp256k1.p
         y3 = (lam * (p1.x - x3) - p1.y) % Secp256k1.p
+        # print(x3, y3)
         with open('all_updated.txt', 'a') as f:
             f.write(f"{x3}\n{y3}\n")
         return ECPoint(x3, y3)
@@ -136,87 +137,53 @@ class Secp256k1:
         point_subtract(P1, P2): 
         აკლებს ერთ წერტილს მეორეს პირველი პუნქტის მიმატებით მეორის უარყოფაზე.
         '''
+        # P1_neg = Secp256k1.point_add(P1)
         P2_neg = Secp256k1.point_negate(P2)
+        # print(P2_neg.x, P2_neg.y)
         return Secp256k1.point_add(P1, P2_neg)
-
+    
     @staticmethod
-    def scalar_mult(k, point):
+    def scalar_subtract(k, point):
         '''
-        scalar_mult(k, point): 
-        ამრავლებს წერტილს სკალარზე (მთლიანი რიცხვი). 
+        point_subtract(k, point): 
+        ყოფს წერტილს სკალარზე (მთლიანი რიცხვი). 
         ეს არის საკვანძო ოპერაცია ECC-ში, 
         რომელიც გამოიყენება კერძო გასაღებებიდან საჯარო გასაღებების გენერირებისთვის და სხვა კრიპტოგრაფიული მიზნებისთვის.
         '''
         result = ECPoint(None, None, infinity=True)
         addend = point
         while k:
-            if k & 1:
+            if k & 115792089237316195423570985008687907853269984665640564039457584007908834671663:  # If the least significant bit is 1
                 result = Secp256k1.point_add(result, addend)
-            addend = Secp256k1.point_add(addend, addend)
-            k >>= 1
+            addend = Secp256k1.point_subtract(addend, addend)  # Doubling the point
+            k >>= 1#15792089237316195423570985008687907853269984665640564039457584007908834671663  # Shift right by 1 bit
+            print(k)
+            with open('all_updated.txt', 'a') as f:
+                f.write(f"{addend.x}\n{addend.y}")
+            # if k > 115792089237316195423570985008687907853269984665640564039457584007908834671663:
+            #     break
         return result
-
+    
     @staticmethod
-    def generate_public_key(private_key):
+    def generate_priv_key(private_key, pub):
         '''
         generate_public_key(private_key): 
         ქმნის საჯარო გასაღებს მოცემული პირადი გასაღებიდან გენერატორის 
         წერტილით პირადი გასაღების სკალარული გამრავლებით G.
         '''
-        return Secp256k1.scalar_mult(private_key, Secp256k1.G)
+        return Secp256k1.scalar_subtract(private_key, pub)
+
 
 public_key = ECPoint(
     0x6c117bb5baa1e55d994453776f284a0542d2149aab967e9572227f7985bf6702,
     0x170b379e47ad394d28495200e0af77aa8d3a54c35c19353284ba3fdc63e02261
 )
 
-# with open('allhex.txt', 'a') as f:
-for i in range(100000):
 
-    adjusted_public_key = Secp256k1.point_subtract(public_key, Secp256k1.G)
-    public_key = adjusted_public_key
-    # f.write(f"{public_key.x:064x}\n{public_key.y:064x}\n")
-    # print(f"Public Key: ({hex(public_key.x)}, {hex(public_key.y)})")
-    # print(f"Adjusted Public Key: ({hex(adjusted_public_key.x)}, {hex(adjusted_public_key.y)})")
-    # public_key.x >>= 1
-    # public_key.y >>= 1
-    # print(i)
-    # if i > 49750000:
-    # Format and save x and y coordinates in hexadecimal format without '0x'
-    # f.write(f"{public_key.x:064x}\n{public_key.y:064x}\n")
+adjusted_public_key = Secp256k1.point_subtract(public_key, Secp256k1.G)
+k = 1
+priv_key = Secp256k1.generate_priv_key(k, adjusted_public_key)
+# print(priv_key.x, priv_key.y)
 
-
-# for _ in range(1111111111111111111):
-#     adjusted_public_key = Secp256k1.point_subtract(public_key, Secp256k1.G)
-#     public_key = adjusted_public_key
-#     count = 0
-#     if public_key == Secp256k1.G:
-#         print(public_key)
-#         break
-#     count += 1
-#     print(count)
-
-
-
-# ... (rest of the code remains the same)
-# for prv in range(500):
-# prv = 256
-# pivate_key = 0x24944f33566d9ed9c410ae72f89454ac6f0cfee446590c01751f094e185e8978
-# private_key = secrets.randbits(prv)
-# Gnerate public key and get unique hex values
-# public_key, log_steps, unique_hex_values = Secp256k1.generate_public_key(private_key)
-# Rad existing hex values from the file
-# existing_hex_values = set()
-# try:
-#     with open('all_hex.txt', 'r') as file:
-#         existing_hex_values = set(line.strip() for line in file.readlines())
-# except FileNotFoundError:
-#     pass  # It's okay if the file does not exist
-# # Ad new unique hex values
-# new_unique_hex_values = unique_hex_values - existing_hex_values
-# # Wite the unique hex values to a file, if there are any new ones
-# if new_unique_hex_values:
-#     with open('all_hex.txt', 'a') as f:
-#         for hex_val in new_unique_hex_values:
-#             f.write(f"{hex_val}\n")
-# print(f"All unique hex values written to all_hex.txt. {private_key}")
+# priv_key = Secp256k1.generate_priv_key(k, {adjusted_public_key.x, adjusted_public_key.y})
+# public_key = adjusted_public_key

@@ -55,8 +55,8 @@ def reverse_ec_multiplication(target_public_key, G, p):
 
 # Define the existing public key as an ECPoint
 existing_public_key = ECPoint(
-    0x7211a824f55b505228e4c3d5194c1fcfaa15a456abdf37f9b9d97a4040afc073,
-    0xb7c52588d95c3b9aa25b0403f1eef75702e84bb7597aabe663b82f6f04ef2777
+    0xb0bd634234abbb1ba1e986e884185c61cf43e001f9137f23c2c409273eb16e65,
+    0x37a576782eba668a7ef8bd3b3cfb1edb7117ab65129b8a2e681f3c1e0908ef7b
 )
 
 # File to store all k values attempted
