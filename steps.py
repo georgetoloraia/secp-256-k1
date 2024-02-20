@@ -66,7 +66,7 @@ class Secp256k1:
 
 
 # Example usage:
-private_key = 0x4  # This should be a large, random number in a real application
+private_key = 0x1  # This should be a large, random number in a real application
 public_key, log_steps = Secp256k1.generate_public_key(private_key)
 
 # Prepare data to write to file

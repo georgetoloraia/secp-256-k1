@@ -1,5 +1,6 @@
 def main():
-    input_file = 'all_updated.txt'  # The file with the decimal numbers
+    # input_file = 'bolotest.txt'  # The file with the decimal numbers
+    input_file = 'all_updated.txt'
     output_file_hex = 'all_hex.txt'  # The file to write the 64-character hexadecimal strings to
 
     try:
