@@ -127,11 +127,11 @@ bublik = 11579208923731619542357098500868790785283756427907490438260516314151816
 with open('all_updated.txt', 'r') as f:
     existing_results = set(map(str.strip, f.readlines()))
 
-for i in range(750000):
+for i in range(1020000):
     previous_steps = divide_points(current_public_key, base_point, a, p)
     # print("previous_step = ", previous_steps)
     
-    if i > 720000:
+    if i > 990000:
         for step in previous_steps:
             result = bublik - previous_steps[0]
             result_str = str(abs(result))
